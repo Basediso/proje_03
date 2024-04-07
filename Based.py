@@ -1,28 +1,64 @@
 import discord
-import proje
+import random
+from discord.ext import commands
 
-# ayricaliklar (intents) değişkeni botun ayrıcalıklarını depolayacak
 intents = discord.Intents.default()
-# Mesajları okuma ayrıcalığını etkinleştirelim
 intents.message_content = True
-# client (istemci) değişkeniyle bir bot oluşturalım ve ayrıcalıkları ona aktaralım
-client = discord.Client(intents=intents)
 
-@client.event
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+@bot.event
 async def on_ready():
-    print(f'{client.user} olarak giriş yaptık.')
+    print(f'{bot.user} olarak giriş yaptık')
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    if message.content.startswith('$merhaba'):
-        await message.channel.send("Selam!")
-    elif message.content.startswith('$bye'):
-        await message.channel.send("\U0001f642")
-    elif message.content.startswith("$Parola_öner"):
-        await message.channel.send(proje.x(10))
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f'Merhaba! Ben {bot.user}, bir Discord sohbet botuyum!')
+
+@bot.command()
+async def heh(ctx, count_heh = 5):
+    await ctx.send("he" * count_heh)
+
+@bot.command()
+async def toplama(ctx, s1=0, s2=5):
+    await ctx.send(s1+s2)
+
+@bot.command()
+async def cıkarma(ctx, s1=0, s2=5):
+    await ctx.send(s1-s2)
+
+@bot.command()
+async def carpma(ctx, s1=0, s2=5):
+    await ctx.send(s1*s2)
+
+@bot.command()
+async def bolme(ctx, s1=0, s2=5):
+    await ctx.send(s1/s2)
+
+@bot.command()
+async def oyun1(ctx, s1=0):
+    x=random.randint(1,6)
+    if x == s1:
+        await ctx.send("doğru bildin")
     else:
-        await message.channel.send(message.content)
+        await ctx.send(f"tutturamadın" ,{x}, "gelmişti.",s1)
 
-client.run("TOKEN")
+@bot.command()
+async def oyun2(ctx, s1):
+    x=random.randint(1,3)
+    if x == 1:
+        x="yazı"
+
+    if x == 2:
+        x="tura"
+
+    if x == 3:
+        x="dik"
+
+    s1= s1.lower()
+    if s1==x:
+        await ctx.send("doğru bildin!")
+    else:
+        await ctx.send(f"yanlış bildin cevap: {x}")
+
+bot.run("TOKEN")
